@@ -1,0 +1,15 @@
+
+[workspace]
+members = [
+    "main-action",
+    "cal-lib",
+    "cal-adder",
+    "module-split",
+    "customer-err-lib",
+    "mock-demo",
+    "dioxus-demo",
+]
+
+
+
+
