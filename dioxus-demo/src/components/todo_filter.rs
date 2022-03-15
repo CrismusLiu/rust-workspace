@@ -5,7 +5,6 @@ use crate::{Filter, Todos};
 
 #[derive(Props)]
 pub struct TodoFilterProps<'a> {
-    pub items_left: usize,
     pub set_todos: &'a UseState<Todos>,
     pub set_filter: &'a UseState<Filter>,
 }
@@ -97,7 +96,9 @@ pub fn todo_filter<'a>(cx: Scope<'a, TodoFilterProps<'a>>) -> Element {
                     button {
                         class: "clear-completed",
                         onclick: move |_|  {
-                            set_todos.make_mut().retain(|_, todo| !todo.completed );
+                            let mut todos = set_todos.make_mut();
+                            todos.retain(|_, todo| !todo.completed );
+                            todos.save();
                         },
                         "clear completed"
                     },

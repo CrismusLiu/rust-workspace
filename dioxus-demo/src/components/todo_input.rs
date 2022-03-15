@@ -30,15 +30,19 @@ pub fn todo_input<'a>(cx: Scope<'a, TodoInputProps<'a>>) -> Element {
                 },
                 onkeydown: move |e| {
                     if e.key == "Enter" && !draft.is_empty() {
-                        let id = NEXT_TODO_ID.fetch_add(1, Ordering::Relaxed);
-                        
-                        set_todos.make_mut().insert(id, TodoItem {
+
+                        let mut todos = set_todos.make_mut();
+                        let id = todos.next_id;
+                        todos.next_id += 1;
+                        todos.insert(id, TodoItem {
                             id,
                             title: draft.clone(),
                             completed: false
                         });
 
                         set_draft.set("".to_string());
+
+                        todos.save();
                     }
 
 
