@@ -1,12 +1,11 @@
-mod calculate;
-pub use crate::calculate::cal;
-
 use rand::{thread_rng, Rng};
-use std::error::Error;
+use std::{error::Error, ops::Add};
 
 use customer_err_lib as ErrLib;
 
 // mod lib;
+
+// use main_action::testCal;
 
 
 fn main() {
@@ -15,16 +14,11 @@ fn main() {
 
     testOutLibFromErr();
 
+    // testCal();
+
 }
 
-// 分模块：将一个大文件拆分成一个模块
-// fn testCal() {
-//     let res = cal::add(thread_rng().gen_range(1..100), 2);
-//     println!("加法运算：{:?}", res);
 
-//     let res = cal::sub(thread_rng().gen_range(1..100), 3);
-//     println!("减法运算：{:?}", res);
-// }
 
 // lib库在当前项目中，需要先引入lib的mod
 // fn testLocalLibErr() {

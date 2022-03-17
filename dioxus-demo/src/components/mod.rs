@@ -7,4 +7,4 @@ pub(crate) use todo_filter::*;
 pub(crate) use todo_input::*;
 pub(crate) use todo_item::*;
 
-pub(crate) use properties::*;
+// pub(crate) use properties::*;

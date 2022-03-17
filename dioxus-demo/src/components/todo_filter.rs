@@ -42,9 +42,6 @@ pub fn todo_filter<'a>(cx: Scope<'a, TodoFilterProps<'a>>) -> Element {
         "items left"
     };
 
-
-
-
     let show_clear_completed = todos.iter().any(|(_, item)|{ item.completed });
 
     let seletc_context = |f: &Filter| if f == set_filter.get() { "selected" } else { "" };

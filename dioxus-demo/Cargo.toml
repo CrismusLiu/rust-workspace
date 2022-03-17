@@ -3,14 +3,19 @@ name = "dioxus-demo"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 console_error_panic_hook = "0.1"
-dioxus = { version = "0.2.3", features = ["web"] }
+dioxus = { version = "0.2.3", optional = true}
 tracing = "0.1"
-tracing-wasm = "0.2"
+tracing-wasm = {version = "0.2", optional = true}
+tracing-subscriber = {version = "0.3", optional= true}
 wasm-bindgen = "0.2.79"
 serde = {version = "1.0", features = ["derive"]}
 serde_json = {version = "1"}
-web-sys = {version = "0.3", features = ["Storage", "Location"]}
+web-sys = {version = "0.3", features = ["Storage", "Location"], optional= true}
+reqwest = { version = "0.11.8", features = ["json"] }
+
+[features]
+default = ["web"]
+web = ["web-sys", "tracing-wasm", "dioxus", "dioxus/web"]
+desktop = ["dioxus", "dioxus/desktop", "tracing-subscriber"]

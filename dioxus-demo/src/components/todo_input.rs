@@ -1,8 +1,5 @@
-use dioxus::{prelude::*};
-use std::sync::atomic::{AtomicU32,Ordering};
+use dioxus::prelude::*;
 use crate::{Todos,TodoItem};
-
-static NEXT_TODO_ID: AtomicU32 = AtomicU32::new(1);
 
 #[derive(Props)]
 pub struct TodoInputProps<'a> {
@@ -15,7 +12,6 @@ pub fn todo_input<'a>(cx: Scope<'a, TodoInputProps<'a>>) -> Element {
 
     let set_todos = cx.props.set_todos;
     
-
     rsx!{
         cx,
         header {
