@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 
-use crate::{Filter, Todos};
+use crate::Filter;
+use crate::models::Todos;
 
 
 #[derive(Props)]
@@ -13,7 +14,6 @@ pub fn todo_filter<'a>(cx: Scope<'a, TodoFilterProps<'a>>) -> Element {
     let set_filter = cx.props.set_filter;
     let set_todos = cx.props.set_todos;
     let todos = set_todos.get();
-
 
     let filter = set_filter.get();
     let items_left = match filter {
@@ -42,7 +42,7 @@ pub fn todo_filter<'a>(cx: Scope<'a, TodoFilterProps<'a>>) -> Element {
         "items left"
     };
 
-    let show_clear_completed = todos.iter().any(|(_, item)|{ item.completed });
+    let show_clear_completed = set_todos.get().show_clear_completed();
 
     let seletc_context = |f: &Filter| if f == set_filter.get() { "selected" } else { "" };
 
@@ -88,14 +88,12 @@ pub fn todo_filter<'a>(cx: Scope<'a, TodoFilterProps<'a>>) -> Element {
                         },
                     }
                 }
-                show_clear_completed.then(|| rsx! {
-                    
+                show_clear_completed.then(|| rsx! {                    
                     button {
                         class: "clear-completed",
                         onclick: move |_|  {
                             let mut todos = set_todos.make_mut();
-                            todos.retain(|_, todo| !todo.completed );
-                            todos.save();
+                            todos.clear_completed();
                         },
                         "clear completed"
                     },
