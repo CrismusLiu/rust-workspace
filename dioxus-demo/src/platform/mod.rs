@@ -1,9 +1,13 @@
+
+use crate::Filter;
+use crate::models::Todos;
+
 #[cfg(feature = "web")]
 mod web;
 
 #[cfg(feature = "desktop")]
 mod desktop;
-use crate::{Filter, Todos};
+
 
 pub trait Store {
     fn get(&self) -> Todos;

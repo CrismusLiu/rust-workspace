@@ -1,5 +1,5 @@
 use std::{io::{Read, Write}, path::PathBuf};
-use crate::Todos;
+use crate::models::Todos;
 use std::fs::File;
 use std::env;
 use super::Store;
@@ -15,16 +15,26 @@ pub fn get_store() -> impl Store {
 }
 
 
+impl Default for FileStore {
+    fn default() -> Self {
+        let path = env::current_dir().unwrap().join(TODO_FILE);
+        Self {
+            path
+        }
+    }
+}
+
 impl Store for FileStore {
     fn get(&self) -> Todos {
+        let default_todos = Todos::default();
         if let Ok(mut file) = File::open(&self.path) {
             let mut content = String::new();
             file.read_to_string(&mut content).unwrap();
-            serde_json::from_str(&content).unwrap_or_default()
+            serde_json::from_str(&content).unwrap_or(default_todos)
         } else {
-            Default::default()
+            // Default::default()
+            default_todos
         }
-        
     }
 
     fn set(&self, todos: &Todos) {
@@ -33,13 +43,4 @@ impl Store for FileStore {
         file.write_all(content.as_bytes()).unwrap();
     }
 
-}
-
-impl Default for FileStore {
-    fn default() -> Self {
-        let path = env::current_dir().unwrap().join(TODO_FILE);
-        Self {
-            path
-        }
-    }
 }

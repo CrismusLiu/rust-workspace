@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use tracing::info;
-use crate::Todos;
+use crate::models::Todos;
 
 #[derive(Props)]
 pub struct TodoItemProps<'a> {
@@ -12,10 +12,14 @@ pub fn todo_item<'a>(cx: Scope<'a, TodoItemProps<'a>>) -> Element {
     let set_edited = use_state(&cx, || false);
     let is_edited = set_edited.get();
 
-    let TodoItemProps { id, set_todos } = cx.props;
+    let id = cx.props.id;
+    let set_todos = cx.props.set_todos;
 
-    let todos = &set_todos.current();
-    let todo = &todos[id];
+    let todos_read = set_todos.current();
+    let todo = todos_read.get(&id)?;
+
+    let set_draft = use_state(&cx, || todo.title.clone());
+    let draft = set_draft.get();
 
     let completed = if todo.completed { "completed" } else { "" };
     let editing = if *is_edited { "editing" } else {""};
@@ -34,10 +38,7 @@ pub fn todo_item<'a>(cx: Scope<'a, TodoItemProps<'a>>) -> Element {
                     onchange: move |e| {
                         info!("checkbox change: {e:?}");
                         let mut todos = set_todos.make_mut();
-                        todos.get_mut(&id).map(|todo| {                            
-                            todo.completed = !todo.completed;
-                        });
-                        todos.save();
+                        todos.checkbox_toggle(id);
                     }
                 },
                 label {
@@ -54,18 +55,16 @@ pub fn todo_item<'a>(cx: Scope<'a, TodoItemProps<'a>>) -> Element {
                     class: "edit",
                     value: "{todo.title}",
                     oninput: move |e| {
-                        info!("label-editable: {e:?}");
-                        let mut todos = set_todos.make_mut();
-                        todos.get_mut(&id).map(|todo|{
-                            todo.title = e.value.clone();
-                        });
+                        info!("label-editable: {e:?}");                        
+                        set_draft.set(e.value.clone());
                     },
                     autofocus: "true",
                     onkeydown: move |e| {
                         match e.key.as_str() {
                             "Enter" | "Escape" | "Tab" => {
                                 set_edited.set(false);
-                                set_todos.make_mut().save();
+                                let mut todos = set_todos.make_mut();
+                                todos.update_todo(id, draft);
                             },
                             _ => {}
                         }
