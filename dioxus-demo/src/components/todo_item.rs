@@ -1,29 +1,28 @@
+use std::ops::Add;
+
 use dioxus::prelude::*;
 use tracing::info;
 use crate::models::Todos;
 
-#[derive(Props)]
-pub struct TodoItemProps<'a> {
+#[derive(Props, PartialEq)]
+pub struct TodoItemProps {
     pub id: u32,
-    pub set_todos: &'a UseState<Todos>
 }
 
-pub fn todo_item<'a>(cx: Scope<'a, TodoItemProps<'a>>) -> Element {
+pub fn todo_item(cx: Scope<TodoItemProps>) -> Element {
     let set_edited = use_state(&cx, || false);
     let is_edited = set_edited.get();
 
     let id = cx.props.id;
-    let set_todos = cx.props.set_todos;
-
-    let todos_read = set_todos.current();
-    let todo = todos_read.get(&id)?;
+    let todos = use_context::<Todos>(&cx)?;
+    let todo_read = todos.read();
+    let todo = todo_read.get(&id)?;
 
     let set_draft = use_state(&cx, || todo.title.clone());
     let draft = set_draft.get();
-
-    let completed = if todo.completed { "completed" } else { "" };
-    let editing = if *is_edited { "editing" } else {""};
     
+    let completed = if todo.completed { "completed" } else { "" };
+    let editing = if *is_edited { "editing" } else {""};    
     
     rsx!{ cx, 
         li {
@@ -37,8 +36,7 @@ pub fn todo_item<'a>(cx: Scope<'a, TodoItemProps<'a>>) -> Element {
                     checked: "{todo.completed}",
                     onchange: move |e| {
                         info!("checkbox change: {e:?}");
-                        let mut todos = set_todos.make_mut();
-                        todos.checkbox_toggle(id);
+                        todos.write().checkbox_toggle(id);
                     }
                 },
                 label {
@@ -53,9 +51,9 @@ pub fn todo_item<'a>(cx: Scope<'a, TodoItemProps<'a>>) -> Element {
             is_edited.then(|| rsx! {
                 input {
                     class: "edit",
-                    value: "{todo.title}",
+                    value: "{draft}",
                     oninput: move |e| {
-                        info!("label-editable: {e:?}");                        
+                        info!("label-editable: {e:?}");
                         set_draft.set(e.value.clone());
                     },
                     autofocus: "true",
@@ -63,15 +61,14 @@ pub fn todo_item<'a>(cx: Scope<'a, TodoItemProps<'a>>) -> Element {
                         match e.key.as_str() {
                             "Enter" | "Escape" | "Tab" => {
                                 set_edited.set(false);
-                                let mut todos = set_todos.make_mut();
-                                todos.update_todo(id, draft);
+                                info!("input edit draft: {draft:?}");
+                                todos.write().update_todo(id, draft);
                             },
                             _ => {}
                         }
                     }
                 }
             })
-        }
-        
+        }        
     }
 }

@@ -102,7 +102,7 @@ impl Todos {
 
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Filter {
     All,
     Active,
