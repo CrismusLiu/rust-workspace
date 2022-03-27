@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Hello, World! - Rust and WebAssembly</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />      
+    </head>
+
+    <body>
+        <script type="module">
+            import init, {greet} from "./pkg/wasm_demo.js";
+            init().then(
+                () => {
+                    greet("test")
+                }
+            );
+
+        </script>
+    </body>
+
+</html>

@@ -8,6 +8,16 @@ members = [
     "customer-err-lib",
     "mock-demo",
     "dioxus-demo",
+    "wasm-demo",
+	"wasm-game-of-life",
+	"wasm-tcp-server",
+	"wasm-tcp-client",
+	"wasm-actix-demo",
+    "http","httpserver",
+    "wasm-actix-demo",
+    "fltk-demo",
+	"sqlx-mysql-demo",
+	"build-web-environment-master",
 ]
 
 
