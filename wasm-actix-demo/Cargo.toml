@@ -16,8 +16,6 @@ dotenv = "0.15.0"
 # openssl = {version = "0.10.38", features = ["vendored"]}
 sqlx = {version = "0.5.11", features = ["mysql", "runtime-tokio-rustls", "macros", "chrono"]}
 
-[[bin]]
-name = "server"
 
 [[bin]]
 name = "teacher-service"

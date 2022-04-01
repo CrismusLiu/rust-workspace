@@ -18,6 +18,7 @@ members = [
     "fltk-demo",
 	"sqlx-mysql-demo",
 	"build-web-environment-master",
+    "tokio-demo",
 ]
 
 

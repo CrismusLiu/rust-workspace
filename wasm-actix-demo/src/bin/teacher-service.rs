@@ -1,6 +1,7 @@
 extern crate actix_web;
 
-use sqlx::mysql::{MySqlConnectOptions, MySqlPool, MySqlPoolOptions};
+use error::MyError;
+use sqlx::mysql::{MySqlConnectOptions, MySqlPoolOptions};
 
 use std::sync::Mutex;
 
@@ -12,16 +13,16 @@ mod state;
 #[path = "../routers.rs"]
 mod routers;
 
-#[path = "../handlers.rs"]
+#[path = "../handlers/mod.rs"]
 mod hanlders;
 
-#[path = "../models.rs"]
+#[path = "../models/mod.rs"]
 mod models;
 
 #[path = "../error.rs"]
 mod error;
 
-#[path = "../db_access.rs"]
+#[path = "../dbaccess/mod.rs"]
 mod db_access;
 
 use routers::*;
@@ -48,13 +49,15 @@ async fn main() -> std::io::Result<()> {
     let share_data = web::Data::new(AppState {
         health_check_response: "ok".to_string(),
         visit_count: Mutex::new(0),
-        // courses: Mutex::new(vec![]),
         db: pool,
     });
 
     let app = move || {
         App::new()
             .app_data(share_data.clone())
+            .app_data(web::JsonConfig::default().error_handler(|_err, _req| {
+                MyError::InvalidInput("Please provide valid Json input".to_string()).into()
+            }))
             .configure(health_routes)
             .configure(course_routes)
     };
